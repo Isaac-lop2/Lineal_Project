@@ -1,9 +1,10 @@
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout
 class MatrizInversaWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self,app):
         super().__init__()
         self.setWindowTitle("Matriz Inversa")
         self.setFixedSize(640, 480)
+        self.app = app
 
         self.initUI()
     def initUI(self):
