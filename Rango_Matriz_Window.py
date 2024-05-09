@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout
 class RangoMatrizWindow(QMainWindow):
-    def __init__(self,app):
+    def __init__(self, app):
         super().__init__()
         self.setWindowTitle("Rango Matriz")
         self.setFixedSize(640, 480)
