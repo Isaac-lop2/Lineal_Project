@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="96891a4d-8bad-4917-a481-9dda839b6f32" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Determinante_Matriz_Window.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MainWindow.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Matriz_Inversa_Window.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Matriz_Operaciones_Window.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cifrado_Window.py" beforeDir="false" afterPath="$PROJECT_DIR$/Cifrado_Window.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Determinante_Matriz_Window.py" beforeDir="false" afterPath="$PROJECT_DIR$/Determinante_Matriz_Window.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/MainWindow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Markov_Window.py" beforeDir="false" afterPath="$PROJECT_DIR$/Markov_Window.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matriz_Inversa_Window.py" beforeDir="false" afterPath="$PROJECT_DIR$/Matriz_Inversa_Window.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Matriz_Operaciones_Window.py" beforeDir="false" afterPath="$PROJECT_DIR$/Matriz_Operaciones_Window.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Operacion_Vectores.py" beforeDir="false" afterPath="$PROJECT_DIR$/Operacion_Vectores.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rango_Matriz_Window.py" beforeDir="false" afterPath="$PROJECT_DIR$/Rango_Matriz_Window.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
