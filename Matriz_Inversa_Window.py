@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QSpinBox, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QSpinBox, QMessageBox, QTableWidget, QTableWidgetItem, QApplication
 
 class MatrizInversaWindow(QMainWindow):
     def __init__(self, app):
@@ -37,16 +37,25 @@ class MatrizInversaWindow(QMainWindow):
         col_layout.addWidget(self.col_spinbox)
         layout.addLayout(col_layout)
 
-        # Botón para generar la matriz y calcular la inversa
-        self.generate_button = QPushButton("Generar Matriz e Invertir")
-        self.generate_button.clicked.connect(self.generate_matrix_and_inverse)
+        # Botón para generar la matriz
+        self.generate_button = QPushButton("Generar Matriz")
+        self.generate_button.clicked.connect(self.generate_matrix)
         layout.addWidget(self.generate_button)
+
+        # Crear un QTableWidget para la matriz
+        self.matrix_table = QTableWidget()
+        layout.addWidget(self.matrix_table)
+
+        # Botón para calcular la inversa
+        self.calculate_button = QPushButton("Calcular Inversa")
+        self.calculate_button.clicked.connect(self.calculate_inverse)
+        layout.addWidget(self.calculate_button)
 
         # Etiqueta para mostrar la matriz inversa
         self.result_label = QLabel("")
         layout.addWidget(self.result_label)
 
-    def generate_matrix_and_inverse(self):
+    def generate_matrix(self):
         rows = self.row_spinbox.value()
         cols = self.col_spinbox.value()
 
@@ -55,30 +64,43 @@ class MatrizInversaWindow(QMainWindow):
             QMessageBox.warning(self, "Error", "La matriz debe ser cuadrada (número de filas igual al número de columnas)")
             return
 
+        # Configurar el QTableWidget para la matriz
+        self.matrix_table.setRowCount(rows)
+        self.matrix_table.setColumnCount(cols)
+        self.matrix_table.clear()
+
+    def calculate_inverse(self):
+        rows = self.row_spinbox.value()
+        cols = self.col_spinbox.value()
+
         # Crear matriz a partir de las entradas del usuario
         matrix = []
         for i in range(rows):
             row = []
             for j in range(cols):
-                text, ok = QInputDialog.getText(self, f"Entrada ({i+1},{j+1})", f"Ingrese el elemento ({i+1},{j+1}):")
-                if ok:
+                item = self.matrix_table.item(i, j)
+                if item and item.text():
                     try:
-                        value = float(text)
+                        value = float(item.text())
                         row.append(value)
                     except ValueError:
-                        QMessageBox.warning(self, "Error", "Por favor, ingrese un número válido.")
+                        QMessageBox.warning(self, "Error", "Por favor, ingrese un número válido en todas las celdas.")
                         return
+                else:
+                    QMessageBox.warning(self, "Error", "Por favor, ingrese un número válido en todas las celdas.")
+                    return
             matrix.append(row)
 
         # Calcular la inversa de la matriz
-        inverse = self.calculate_inverse(matrix)
+        inverse = self.calculate_inverse_recursive(matrix)
 
         if inverse is not None:
-            self.result_label.setText("Matriz Inversa:\n" + str(inverse))
+            inverse_str = "\n".join(["\t".join(map(str, row)) for row in inverse])
+            self.result_label.setText(f"Matriz Inversa:\n{inverse_str}")
         else:
             QMessageBox.warning(self, "Error", "La matriz no es invertible.")
 
-    def calculate_inverse(self, matrix):
+    def calculate_inverse_recursive(self, matrix):
         # Calcula la matriz identidad del mismo tamaño que la matriz original
         n = len(matrix)
         identity = [[0] * n for _ in range(n)]
@@ -101,7 +123,7 @@ class MatrizInversaWindow(QMainWindow):
             divisor = matrix[i][i]
             if divisor == 0:
                 return None  # La matriz no es invertible
-            for j in range(i, n):
+            for j in range(n):
                 matrix[i][j] /= divisor
                 identity[i][j] /= divisor
 
@@ -109,7 +131,7 @@ class MatrizInversaWindow(QMainWindow):
             for k in range(n):
                 if k != i:
                     factor = matrix[k][i]
-                    for j in range(i, n):
+                    for j in range(n):
                         matrix[k][j] -= factor * matrix[i][j]
                         identity[k][j] -= factor * identity[i][j]
 
@@ -117,7 +139,6 @@ class MatrizInversaWindow(QMainWindow):
 
 if __name__ == "__main__":
     import sys
-    from PyQt5.QtWidgets import QApplication, QInputDialog
 
     app = QApplication(sys.argv)
     window = MatrizInversaWindow(app)

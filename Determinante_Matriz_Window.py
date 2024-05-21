@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QSpinBox, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QSpinBox, QMessageBox, QTableWidget, QTableWidgetItem, QApplication
 
 class DeterminanteMatrizWindow(QMainWindow):
     def __init__(self, app):
@@ -37,16 +37,25 @@ class DeterminanteMatrizWindow(QMainWindow):
         col_layout.addWidget(self.col_spinbox)
         layout.addLayout(col_layout)
 
-        # Botón para generar la matriz y calcular el determinante
-        self.generate_button = QPushButton("Generar Matriz y Calcular Determinante")
-        self.generate_button.clicked.connect(self.generate_matrix_and_determinant)
+        # Botón para generar la matriz
+        self.generate_button = QPushButton("Generar Matriz")
+        self.generate_button.clicked.connect(self.generate_matrix)
         layout.addWidget(self.generate_button)
+
+        # Crear un QTableWidget para la matriz
+        self.matrix_table = QTableWidget()
+        layout.addWidget(self.matrix_table)
+
+        # Botón para calcular el determinante
+        self.calculate_button = QPushButton("Calcular Determinante")
+        self.calculate_button.clicked.connect(self.calculate_determinant)
+        layout.addWidget(self.calculate_button)
 
         # Etiqueta para mostrar el determinante
         self.result_label = QLabel("")
         layout.addWidget(self.result_label)
 
-    def generate_matrix_and_determinant(self):
+    def generate_matrix(self):
         rows = self.row_spinbox.value()
         cols = self.col_spinbox.value()
 
@@ -55,26 +64,38 @@ class DeterminanteMatrizWindow(QMainWindow):
             QMessageBox.warning(self, "Error", "La matriz debe ser cuadrada (número de filas igual al número de columnas)")
             return
 
+        # Configurar el QTableWidget para la matriz
+        self.matrix_table.setRowCount(rows)
+        self.matrix_table.setColumnCount(cols)
+        self.matrix_table.clear()
+
+    def calculate_determinant(self):
+        rows = self.row_spinbox.value()
+        cols = self.col_spinbox.value()
+
         # Crear matriz a partir de las entradas del usuario
         matrix = []
         for i in range(rows):
             row = []
             for j in range(cols):
-                text, ok = QInputDialog.getText(self, f"Entrada ({i+1},{j+1})", f"Ingrese el elemento ({i+1},{j+1}):")
-                if ok:
+                item = self.matrix_table.item(i, j)
+                if item and item.text():
                     try:
-                        value = float(text)
+                        value = float(item.text())
                         row.append(value)
                     except ValueError:
-                        QMessageBox.warning(self, "Error", "Por favor, ingrese un número válido.")
+                        QMessageBox.warning(self, "Error", "Por favor, ingrese un número válido en todas las celdas.")
                         return
+                else:
+                    QMessageBox.warning(self, "Error", "Por favor, ingrese un número válido en todas las celdas.")
+                    return
             matrix.append(row)
 
         # Calcular el determinante de la matriz
-        determinant = self.calculate_determinant(matrix)
+        determinant = self.calculate_determinant_recursive(matrix)
         self.result_label.setText(f"Determinante de la matriz:\n{determinant}")
 
-    def calculate_determinant(self, matrix):
+    def calculate_determinant_recursive(self, matrix):
         n = len(matrix)
         if n == 1:
             return matrix[0][0]
@@ -84,12 +105,11 @@ class DeterminanteMatrizWindow(QMainWindow):
             det = 0
             for j in range(n):
                 minor = [row[:j] + row[j+1:] for row in matrix[1:]]
-                det += ((-1) ** j) * matrix[0][j] * self.calculate_determinant(minor)
+                det += ((-1) ** j) * matrix[0][j] * self.calculate_determinant_recursive(minor)
             return det
 
 if __name__ == "__main__":
     import sys
-    from PyQt5.QtWidgets import QApplication, QInputDialog
 
     app = QApplication(sys.argv)
     window = DeterminanteMatrizWindow(app)
