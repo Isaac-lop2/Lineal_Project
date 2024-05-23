@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QSpinBox, QMessageBox, QTableWidget, QTableWidgetItem, QApplication
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QSpinBox, QMessageBox, QTableWidget, QTableWidgetItem, QApplication, QTextEdit
 
 class MatrizInversaWindow(QMainWindow):
     def __init__(self, app):
@@ -55,6 +55,11 @@ class MatrizInversaWindow(QMainWindow):
         self.result_label = QLabel("")
         layout.addWidget(self.result_label)
 
+        # Área de texto para mostrar el proceso de cálculo
+        self.process_text = QTextEdit()
+        self.process_text.setReadOnly(True)
+        layout.addWidget(self.process_text)
+
     def generate_matrix(self):
         rows = self.row_spinbox.value()
         cols = self.col_spinbox.value()
@@ -91,7 +96,8 @@ class MatrizInversaWindow(QMainWindow):
                     return
             matrix.append(row)
 
-        # Calcular la inversa de la matriz
+        # Calcular la inversa de la matriz y mostrar el proceso
+        self.process_text.clear()
         inverse = self.calculate_inverse_recursive(matrix)
 
         if inverse is not None:
@@ -119,6 +125,10 @@ class MatrizInversaWindow(QMainWindow):
             matrix[i], matrix[max_row] = matrix[max_row], matrix[i]
             identity[i], identity[max_row] = identity[max_row], identity[i]
 
+            self.process_text.append(f"Intercambiar filas {i + 1} y {max_row + 1}")
+            self.process_text.append(f"Matriz:\n{self.matrix_to_string(matrix)}")
+            self.process_text.append(f"Identidad:\n{self.matrix_to_string(identity)}")
+
             # Normaliza la fila actual
             divisor = matrix[i][i]
             if divisor == 0:
@@ -126,6 +136,10 @@ class MatrizInversaWindow(QMainWindow):
             for j in range(n):
                 matrix[i][j] /= divisor
                 identity[i][j] /= divisor
+
+            self.process_text.append(f"Normalizar fila {i + 1} dividiendo por {divisor}")
+            self.process_text.append(f"Matriz:\n{self.matrix_to_string(matrix)}")
+            self.process_text.append(f"Identidad:\n{self.matrix_to_string(identity)}")
 
             # Elimina los otros elementos de la columna actual
             for k in range(n):
@@ -135,7 +149,14 @@ class MatrizInversaWindow(QMainWindow):
                         matrix[k][j] -= factor * matrix[i][j]
                         identity[k][j] -= factor * identity[i][j]
 
+                    self.process_text.append(f"Eliminar elemento en posición ({k + 1}, {i + 1}) multiplicando fila {i + 1} por {factor} y restando")
+                    self.process_text.append(f"Matriz:\n{self.matrix_to_string(matrix)}")
+                    self.process_text.append(f"Identidad:\n{self.matrix_to_string(identity)}")
+
         return identity
+
+    def matrix_to_string(self, matrix):
+        return "\n".join(["\t".join(map(str, row)) for row in matrix])
 
 if __name__ == "__main__":
     import sys

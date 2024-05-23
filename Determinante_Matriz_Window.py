@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QSpinBox, QMessageBox, QTableWidget, QTableWidgetItem, QApplication
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QSpinBox, QMessageBox, QTableWidget, QTableWidgetItem, QApplication, QTextEdit
 
 class DeterminanteMatrizWindow(QMainWindow):
     def __init__(self, app):
@@ -55,6 +55,11 @@ class DeterminanteMatrizWindow(QMainWindow):
         self.result_label = QLabel("")
         layout.addWidget(self.result_label)
 
+        # Área de texto para mostrar el proceso de cálculo
+        self.process_text = QTextEdit()
+        self.process_text.setReadOnly(True)
+        layout.addWidget(self.process_text)
+
     def generate_matrix(self):
         rows = self.row_spinbox.value()
         cols = self.col_spinbox.value()
@@ -91,21 +96,33 @@ class DeterminanteMatrizWindow(QMainWindow):
                     return
             matrix.append(row)
 
-        # Calcular el determinante de la matriz
-        determinant = self.calculate_determinant_recursive(matrix)
+        # Calcular el determinante de la matriz y mostrar el proceso
+        self.process_text.clear()
+        determinant = self.calculate_determinant_recursive(matrix, 0)
         self.result_label.setText(f"Determinante de la matriz:\n{determinant}")
 
-    def calculate_determinant_recursive(self, matrix):
+    def calculate_determinant_recursive(self, matrix, depth):
         n = len(matrix)
+        indent = "  " * depth  # Sangría para mostrar la profundidad del cálculo
+
         if n == 1:
+            self.process_text.append(f"{indent}Det({matrix}) = {matrix[0][0]}")
             return matrix[0][0]
         elif n == 2:
-            return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
+            det = matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
+            self.process_text.append(f"{indent}Det({matrix}) = {matrix[0][0]}*{matrix[1][1]} - {matrix[0][1]}*{matrix[1][0]} = {det}")
+            return det
         else:
             det = 0
+            self.process_text.append(f"{indent}Calculando det({matrix}):")
             for j in range(n):
                 minor = [row[:j] + row[j+1:] for row in matrix[1:]]
-                det += ((-1) ** j) * matrix[0][j] * self.calculate_determinant_recursive(minor)
+                cofactor = ((-1) ** j) * matrix[0][j]
+                self.process_text.append(f"{indent}Cofactor para elemento (1, {j + 1}) = {cofactor}")
+                minor_det = self.calculate_determinant_recursive(minor, depth + 1)
+                det += cofactor * minor_det
+                self.process_text.append(f"{indent}Sub-determinante para menor {minor} = {minor_det}")
+            self.process_text.append(f"{indent}Det({matrix}) = {det}")
             return det
 
 if __name__ == "__main__":

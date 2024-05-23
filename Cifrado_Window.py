@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import (
-    QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QLineEdit, QTableWidget, QTableWidgetItem, QApplication, QMessageBox, QTextEdit
+    QMainWindow, QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit, QTableWidget, QTableWidgetItem,
+    QApplication, QMessageBox, QTextEdit
 )
 from PyQt5.QtGui import QFont
 import sys
@@ -14,40 +15,32 @@ class CifradoWindow(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        # Widget central
         central_widget = QWidget()
         central_widget.setStyleSheet("background-color: #E0EBFF")
         self.setCentralWidget(central_widget)
 
-        # Diseño vertical para los widgets
         layout = QVBoxLayout()
         central_widget.setLayout(layout)
 
-        # Campo de entrada para el mensaje
         self.message_input = QLineEdit()
         self.message_input.setPlaceholderText("Ingrese el mensaje a cifrar")
         layout.addWidget(self.message_input)
 
-        # Botón para generar la tabla de la matriz clave
         self.generate_matrix_button = QPushButton("Generar Matriz Clave")
         self.generate_matrix_button.clicked.connect(self.generate_matrix)
         layout.addWidget(self.generate_matrix_button)
 
-        # Crear QTableWidget para la matriz clave
         self.matrix_table = QTableWidget()
         layout.addWidget(self.matrix_table)
 
-        # Botones para cifrar y descifrar
         self.encrypt_button = QPushButton("Cifrar Mensaje")
         self.encrypt_button.clicked.connect(self.encrypt_message)
         layout.addWidget(self.encrypt_button)
 
-        # Campo de texto para mostrar los números cifrados
         self.encrypted_numbers = QTextEdit()
         self.encrypted_numbers.setPlaceholderText("Números cifrados")
         layout.addWidget(self.encrypted_numbers)
 
-        # Campo de entrada para los números cifrados
         self.encrypted_input = QLineEdit()
         self.encrypted_input.setPlaceholderText("Ingrese los números cifrados para descifrar")
         layout.addWidget(self.encrypted_input)
@@ -56,13 +49,16 @@ class CifradoWindow(QMainWindow):
         self.decrypt_button.clicked.connect(self.decrypt_message)
         layout.addWidget(self.decrypt_button)
 
-        # Etiqueta para mostrar el mensaje cifrado/descifrado
         self.result_label = QLabel("")
         self.result_label.setFont(QFont("Arial", 14))
         layout.addWidget(self.result_label)
 
+        self.process_text = QTextEdit()
+        self.process_text.setReadOnly(True)
+        layout.addWidget(self.process_text)
+
     def generate_matrix(self):
-        size = len(self.message_input.text())
+        size = 3  # For simplicity, using a fixed size of 3x3
         self.matrix_table.setRowCount(size)
         self.matrix_table.setColumnCount(size)
 
@@ -90,7 +86,7 @@ class CifradoWindow(QMainWindow):
             return None
 
     def encrypt_message(self):
-        message = self.message_input.text()
+        message = self.message_input.text().upper().replace(' ', '')
         if not message:
             QMessageBox.warning(self, "Error", "Por favor, ingrese un mensaje para cifrar.")
             return
@@ -99,18 +95,28 @@ class CifradoWindow(QMainWindow):
         if matrix is None:
             return
 
-        size = len(matrix)
-        vector = [ord(char) for char in message]
+        vector = [ord(char) - 64 for char in message]
 
-        # Padding if necessary
-        while len(vector) < size:
+        while len(vector) % 3 != 0:
             vector.append(0)
 
-        encrypted_vector = self.matrix_vector_mult(matrix, vector)
-        encrypted_message = ''.join(chr(int(round(num))) for num in encrypted_vector)
+        self.process_text.clear()
+        self.process_text.append("Mensaje original: " + message)
+        self.process_text.append("Vector numérico del mensaje: " + str(vector))
+
+        blocks = [vector[i:i + 3] for i in range(0, len(vector), 3)]
+        encrypted_vector = []
+
+        for block in blocks:
+            encrypted_block = self.matrix_vector_mult(matrix, block)
+            encrypted_vector.extend(encrypted_block)
+
+        encrypted_message = ' '.join(map(str, encrypted_vector))
+        self.process_text.append("Matriz clave:\n" + '\n'.join(map(str, matrix)))
+        self.process_text.append("Vector cifrado: " + encrypted_message)
 
         self.result_label.setText(f"Mensaje Cifrado: {encrypted_message}")
-        self.encrypted_numbers.setText(' '.join(map(str, encrypted_vector)))
+        self.encrypted_numbers.setText(encrypted_message)
 
     def decrypt_message(self):
         encrypted_numbers_text = self.encrypted_input.text()
@@ -129,10 +135,21 @@ class CifradoWindow(QMainWindow):
             return
 
         try:
-            inverse_matrix = self.invert_matrix(matrix)
-            decrypted_vector = self.matrix_vector_mult(inverse_matrix, encrypted_vector)
-            decrypted_message = ''.join(chr(int(round(num))) for num in decrypted_vector).rstrip('\x00')
+            self.process_text.clear()
+            self.process_text.append("Números cifrados: " + str(encrypted_vector))
 
+            inverse_matrix = self.invert_matrix(matrix)
+            self.process_text.append("Matriz clave invertida:\n" + '\n'.join(map(str, inverse_matrix)))
+
+            blocks = [encrypted_vector[i:i + 3] for i in range(0, len(encrypted_vector), 3)]
+            decrypted_vector = []
+
+            for block in blocks:
+                decrypted_block = self.matrix_vector_mult(inverse_matrix, block)
+                decrypted_vector.extend(decrypted_block)
+
+            decrypted_message = ''.join(chr(int(round(num)) + 64) for num in decrypted_vector).rstrip('@')
+            self.process_text.append("Vector descifrado: " + str(decrypted_vector))
             self.result_label.setText(f"Mensaje Descifrado: {decrypted_message}")
         except ValueError:
             QMessageBox.warning(self, "Error", "La matriz no es invertible. No se puede descifrar el mensaje.")
@@ -146,9 +163,7 @@ class CifradoWindow(QMainWindow):
     def invert_matrix(self, matrix):
         size = len(matrix)
         identity = [[float(i == j) for i in range(size)] for j in range(size)]
-
         for i in range(size):
-            # Search for maximum in this column
             max_el = abs(matrix[i][i])
             max_row = i
             for k in range(i + 1, size):
@@ -156,11 +171,9 @@ class CifradoWindow(QMainWindow):
                     max_el = abs(matrix[k][i])
                     max_row = k
 
-            # Swap maximum row with current row (column by column)
             matrix[i], matrix[max_row] = matrix[max_row], matrix[i]
             identity[i], identity[max_row] = identity[max_row], identity[i]
 
-            # Make all rows below this one 0 in current column
             for k in range(i + 1, size):
                 c = -matrix[k][i] / matrix[i][i]
                 for j in range(i, size):
@@ -171,7 +184,6 @@ class CifradoWindow(QMainWindow):
                 for j in range(size):
                     identity[k][j] += c * identity[i][j]
 
-        # Solve equation matrix * inverse_matrix = identity
         for i in range(size - 1, -1, -1):
             for k in range(size):
                 identity[i][k] /= matrix[i][i]
@@ -187,4 +199,3 @@ if __name__ == "__main__":
     window = CifradoWindow(app)
     window.show()
     sys.exit(app.exec_())
-
