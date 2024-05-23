@@ -144,7 +144,7 @@ class MainWindow(QMainWindow):
             self.app.processEvents()
 
     def show_Matriz_Inversa_Window(self):
-        self.Matriz_Inversa_Window = MatrizInversaWindow()
+        self.Matriz_Inversa_Window = MatrizInversaWindow(self.app)
         self.Matriz_Inversa_Window.show()
         while True:
             self.app.processEvents()
@@ -156,13 +156,13 @@ class MainWindow(QMainWindow):
             self.app.processEvents()
 
     def show_Determinante_Matriz_Window(self):
-        self.Determinante_Matriz_Window = DeterminanteMatrizWindow()
+        self.Determinante_Matriz_Window = DeterminanteMatrizWindow(self.app)
         self.Determinante_Matriz_Window.show()
         while True:
             self.app.processEvents()
 
     def show_Cifrado_Window(self):
-        self.Cifrado_Window = CifradoWindow()
+        self.Cifrado_Window = CifradoWindow(self.app)
         self.Cifrado_Window.show()
         while True:
             self.app.processEvents()
