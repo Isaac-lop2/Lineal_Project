@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="96891a4d-8bad-4917-a481-9dda839b6f32" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Lineal_Project.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Lineal_Project.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Markov_Window.py" beforeDir="false" afterPath="$PROJECT_DIR$/Markov_Window.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Matriz_Operaciones_Window.py" beforeDir="false" afterPath="$PROJECT_DIR$/Matriz_Operaciones_Window.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Rango_Matriz_Window.py" beforeDir="false" afterPath="$PROJECT_DIR$/Rango_Matriz_Window.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -42,7 +38,7 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Panchito&quot;
+    &quot;git-widget-placeholder&quot;: &quot;Develop&quot;
   }
 }</component>
   <component name="RunManager">

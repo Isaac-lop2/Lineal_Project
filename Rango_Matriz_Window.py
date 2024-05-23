@@ -52,7 +52,7 @@ class RangoMatrizWindow(QMainWindow):
         self.tablaA.setFixedSize(400, 150)
         button = QPushButton('Confirmar')
         button.setStyleSheet('background-color: pink')
-        button.clicked.connect(self.operation_matrix_range)
+        button.clicked.connect(self.confirm)
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignHCenter)
         layout.addWidget(line1_text)
@@ -62,26 +62,45 @@ class RangoMatrizWindow(QMainWindow):
 
 
     def save_a(self):
-        try:
-            self.matrix_a = []
-            for fila in range(self.tablaA.rowCount()):
-                fila_datos = []
-                for columna in range(self.tablaA.columnCount()):
-                    item = self.tablaA.item(fila, columna)
-                    if item is not None:
-                        texto = item.text()
-                        fila_datos.append(texto)
-                    else:
-                        fila_datos.append('')
-                self.matrix_a.append(fila_datos)
+        self.vault = None
+        self.matrix_a = []
+        for fila in range(self.tablaA.rowCount()):
+            fila_datos = []
+            for columna in range(self.tablaA.columnCount()):
+                item = self.tablaA.item(fila, columna)
+                if item is not None:
+                    texto = item.text()
+                    fila_datos.append(texto)
+                else:
+                    fila_datos.append('')
+            self.matrix_a.append(fila_datos)
 
-            QMessageBox.information(self.window_range, 'Datos Ingresados',
-                                    'Los valores se han ingresado correctamente')
+        Error = 0
+        for i in self.matrix_a:
+            for j in i:
+                try:
+                    if int(j):
+                        pass
 
-        except Exception as e:
-            QMessageBox.critical(self.window_range, 'Error', f'Ocurrió un error al guardar los datos: {e}')
+                except ValueError:
+                    Error += 1
+
+        if Error == 0:
+            self.vault = 1
+
+        else:
+            QMessageBox.warning(self.window_range, 'Error de valor', 'Algun valor no es correcto')
+
+    def confirm(self):
+        self.save_a()
+        if self.vault is None:
+            pass
+
+        else:
+            self.operation_matrix_range()
 
     def rango_eliminacion_gaussiana(self, matriz):
+        self.operation = []
         matriz = np.array(matriz, dtype=float)
 
         filas, columnas = matriz.shape
@@ -96,6 +115,7 @@ class RangoMatrizWindow(QMainWindow):
             matriz[i] = matriz[i] / matriz[i, i]
 
             for j in range(i + 1, filas):
+                self.operation.append(f'{matriz[i][j]} - {matriz[i][j]} * {matriz[j, i]}')
                 matriz[j] = matriz[j] - matriz[i] * matriz[j, i]
 
         rango = 0
@@ -120,12 +140,16 @@ class RangoMatrizWindow(QMainWindow):
         layout_result = QVBoxLayout()
         layout_result.setAlignment(Qt.AlignCenter)
         result = self.rango_eliminacion_gaussiana(self.matrix_a)
-        label = QLabel(f'{result}')
+        label = QLabel(f'El rango es: {result}')
         label.setAlignment(Qt.AlignCenter)
         layout_main.addWidget(label)
         layout_main.addLayout(layout_result)
         taxt2 = QLabel('Procedimiento')
         layout_main.addWidget(taxt2)
+        for i in self.operation:
+            info = QLabel(f'{i}')
+            info.setAlignment(Qt.AlignCenter)
+            layout_operation.addWidget(info)
         layout_main.addLayout(layout_operation)
         confirmar = QPushButton('Cerrar')
         confirmar.setStyleSheet('background-color: pink')
