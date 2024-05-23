@@ -125,10 +125,3 @@ class DeterminanteMatrizWindow(QMainWindow):
             self.process_text.append(f"{indent}Det({matrix}) = {det}")
             return det
 
-if __name__ == "__main__":
-    import sys
-
-    app = QApplication(sys.argv)
-    window = DeterminanteMatrizWindow(app)
-    window.show()
-    sys.exit(app.exec_())

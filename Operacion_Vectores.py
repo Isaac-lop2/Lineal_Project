@@ -221,10 +221,3 @@ class OperacionVectores(QMainWindow):
             QMessageBox.warning(self, "Error", "Por favor, ingrese componentes válidas para ambos vectores.")
 
 
-if __name__ == "__main__":
-    import sys
-
-    app = QApplication(sys.argv)
-    window = OperacionVectores(app)
-    window.show()
-    sys.exit(app.exec_())

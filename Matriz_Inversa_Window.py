@@ -158,10 +158,4 @@ class MatrizInversaWindow(QMainWindow):
     def matrix_to_string(self, matrix):
         return "\n".join(["\t".join(map(str, row)) for row in matrix])
 
-if __name__ == "__main__":
-    import sys
 
-    app = QApplication(sys.argv)
-    window = MatrizInversaWindow(app)
-    window.show()
-    sys.exit(app.exec_())

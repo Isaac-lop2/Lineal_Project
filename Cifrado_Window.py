@@ -194,8 +194,3 @@ class CifradoWindow(QMainWindow):
 
         return identity
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = CifradoWindow(app)
-    window.show()
-    sys.exit(app.exec_())
