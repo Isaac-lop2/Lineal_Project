@@ -115,13 +115,13 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget_central)
 
         # Conectamos los botones a las funciones para abrir las otras ventanas
-        boton_1.clicked.connect(self.show_Rango_Matriz_Window)
-        boton_2.clicked.connect(self.show_Operacion_Vectores)
-        boton_3.clicked.connect(self.show_Matriz_Operaciones_Window)
-        boton_4.clicked.connect(self.show_Matriz_Inversa_Window)
-        boton_5.clicked.connect(self.show_Markov_Window)
-        boton_6.clicked.connect(self.show_Determinante_Matriz_Window)
-        boton_7.clicked.connect(self.show_Cifrado_Window)
+        boton_1.clicked.connect(self.show_Matriz_Operaciones_Window)
+        boton_2.clicked.connect(self.show_Matriz_Inversa_Window)
+        boton_3.clicked.connect(self.show_Rango_Matriz_Window)
+        boton_4.clicked.connect(self.show_Determinante_Matriz_Window)
+        boton_5.clicked.connect(self.show_Cifrado_Window)
+        boton_6.clicked.connect(self.show_Markov_Window)
+        boton_7.clicked.connect(self.show_Operacion_Vectores)
 
 
     # Funciones para mostrar cada ventana
