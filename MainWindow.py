@@ -122,6 +122,7 @@ class MainWindow(QMainWindow):
         boton_5.clicked.connect(self.show_Cifrado_Window)
         boton_6.clicked.connect(self.show_Markov_Window)
         boton_7.clicked.connect(self.show_Operacion_Vectores)
+        boton_8.clicked.connect(self.close_program)
 
 
     # Funciones para mostrar cada ventana
